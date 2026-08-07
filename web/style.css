@@ -568,7 +568,9 @@ input:focus-visible {
   height: 100%;
   background: transparent;
   cursor: ew-resize;
-  touch-action: none;
+  /* Vertical panning remains available so mobile can hand the next gesture
+     back to native page scrolling after the selected growth reaches 100%. */
+  touch-action: pan-y;
 }
 
 .message {

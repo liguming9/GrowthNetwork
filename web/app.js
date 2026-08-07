@@ -133,6 +133,17 @@
     dwellTicker: null,
   };
 
+  // A touch gesture represents relative time on mobile. The gesture remains
+  // captured until it ends, then the following swipe is released to native
+  // page scrolling once the selected growth layer has reached 100%.
+  const mobileSwipeGesture = {
+    tracking: false,
+    directionLocked: false,
+    startX: 0,
+    startY: 0,
+    lastY: 0,
+  };
+
   function clamp(value, low, high) {
     return Math.max(low, Math.min(high, value));
   }
@@ -172,9 +183,10 @@
     } catch (error) {
       console.warn("The visitor session could not be persisted locally", error);
     }
-    // The supplied GrowthNetwork web server stores the same record as JSONL.
-    // A plain `python -m http.server` remains a supported fallback: in that
-    // case the browser-local copy above still preserves the completed study.
+    // The supplied GrowthNetwork server validates the same record, keeps a
+    // local JSONL backup and, when configured, uploads an independent JSON
+    // file to the private visitor-data repository. A plain static server
+    // remains a supported fallback through the browser-local copy above.
     window.fetch("/api/visitor-session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -1384,6 +1396,8 @@
       : exhibitionActive
         ? "Exhibition memory"
         : "Your journey";
+    const activeTimelineComplete = getActiveTimelineTime()
+      >= getActiveTimelineDuration() - 0.0001;
     const pointerDirection = state.mobileRotated ? "vertically" : "horizontally";
     pointerHint.textContent = onsiteActive
       ? `Red on-site routes · Move ${pointerDirection} to follow staggered visitor arrivals.`
@@ -1394,6 +1408,21 @@
     if (personalActive) {
       pointerHint.textContent = `Purple personal trace / Move ${pointerDirection} to replay your viewing order and dwell.`;
       replayActiveButton.textContent = "Replay journey";
+    }
+    if (state.mobileRotated) {
+      const layerName = onsiteActive
+        ? "Red on-site routes"
+        : exhibitionActive
+          ? "Blue exhibition memory"
+          : "Purple personal trace";
+      pointerHint.textContent = activeTimelineComplete
+        ? `${layerName} complete / Swipe up again to continue down the page.`
+        : `${layerName} / Swipe up to grow; swipe down to rewind.`;
+      canvas.title = activeTimelineComplete
+        ? "Growth complete. Swipe up to continue down the page."
+        : "Swipe up to advance the selected growth layer";
+    } else {
+      canvas.title = "Move left to right to scrub the selected growth layer";
     }
     updateExhibitionDateTimeline();
   }
@@ -1461,6 +1490,116 @@
     updateControls();
   }
 
+  function getActiveTimelineDuration() {
+    if (state.activeLayer === "exhibition") {
+      return state.exhibitionDuration;
+    }
+    if (state.activeLayer === "personal" && state.personalJourney) {
+      return state.personalDuration;
+    }
+    return state.duration;
+  }
+
+  function getActiveTimelineTime() {
+    if (state.activeLayer === "exhibition") {
+      return state.exhibitionTime;
+    }
+    if (state.activeLayer === "personal" && state.personalJourney) {
+      return state.personalTime;
+    }
+    return state.currentTime;
+  }
+
+  function setActiveTimelineTime(nextTime) {
+    const duration = getActiveTimelineDuration();
+    const time = clamp(nextTime, 0, duration);
+    if (state.activeLayer === "exhibition") {
+      state.exhibitionTime = time;
+      state.exhibitionPlaying = false;
+    } else if (state.activeLayer === "personal" && state.personalJourney) {
+      state.personalTime = time;
+      state.personalPlaying = false;
+    } else {
+      state.currentTime = time;
+      state.playing = false;
+    }
+    state.pointerDriven = true;
+    state.previousFrame = null;
+  }
+
+  function isInteractiveStageTarget(target) {
+    return target instanceof Element
+      && Boolean(target.closest("button, a, input, select, label"));
+  }
+
+  function beginMobileSwipe(event) {
+    if (!state.mobileRotated
+        || !state.data
+        || event.touches.length !== 1
+        || isInteractiveStageTarget(event.target)) {
+      return;
+    }
+    // A fresh gesture that begins after completion belongs entirely to the
+    // browser, allowing the page to scroll below the tall animation stage.
+    if (getActiveTimelineTime() >= getActiveTimelineDuration() - 0.0001) {
+      mobileSwipeGesture.tracking = false;
+      return;
+    }
+    const touch = event.touches[0];
+    mobileSwipeGesture.tracking = true;
+    mobileSwipeGesture.directionLocked = false;
+    mobileSwipeGesture.startX = touch.clientX;
+    mobileSwipeGesture.startY = touch.clientY;
+    mobileSwipeGesture.lastY = touch.clientY;
+  }
+
+  function moveMobileSwipe(event) {
+    if (!mobileSwipeGesture.tracking
+        || !state.mobileRotated
+        || event.touches.length !== 1) {
+      return;
+    }
+    const touch = event.touches[0];
+    const totalX = touch.clientX - mobileSwipeGesture.startX;
+    const totalY = touch.clientY - mobileSwipeGesture.startY;
+    if (!mobileSwipeGesture.directionLocked) {
+      if (Math.max(Math.abs(totalX), Math.abs(totalY)) < 5) {
+        return;
+      }
+      if (Math.abs(totalX) > Math.abs(totalY)) {
+        mobileSwipeGesture.tracking = false;
+        return;
+      }
+      mobileSwipeGesture.directionLocked = true;
+    }
+
+    const upwardPixels = mobileSwipeGesture.lastY - touch.clientY;
+    const currentTime = getActiveTimelineTime();
+    // At time zero a downward gesture remains native, preventing a second
+    // scroll trap at the beginning of the selected timeline.
+    if (upwardPixels < 0 && currentTime <= 0.0001) {
+      mobileSwipeGesture.tracking = false;
+      return;
+    }
+    if (event.cancelable) {
+      event.preventDefault();
+    }
+    mobileSwipeGesture.lastY = touch.clientY;
+    const gestureDistance = Math.max(
+      360,
+      Math.min(720, canvas.getBoundingClientRect().height * 0.72),
+    );
+    const timeDelta = upwardPixels / gestureDistance
+      * getActiveTimelineDuration();
+    setActiveTimelineTime(currentTime + timeDelta);
+    updateControls();
+  }
+
+  function endMobileSwipe() {
+    mobileSwipeGesture.tracking = false;
+    mobileSwipeGesture.directionLocked = false;
+  }
+
   function scrubFromPointer(clientX, clientY) {
     if (!state.data) {
       return;
@@ -1494,8 +1633,12 @@
   function scrubFromAnimationStage(event) {
     // Buttons retain normal click behaviour; all non-interactive editorial
     // layers (including the title) participate in the spatial timeline.
-    if (event.target instanceof Element
-        && event.target.closest("button, a, input, select, label")) {
+    if (isInteractiveStageTarget(event.target)) {
+      return;
+    }
+    // Touch uses relative swipe distance on mobile. Applying this absolute
+    // pointer mapping as well would make the timeline jump on touch-down.
+    if (state.mobileRotated && event.pointerType === "touch") {
       return;
     }
     if (state.mobileRotated) {
@@ -1645,6 +1788,18 @@
       passive: true,
     });
     animationStage.addEventListener("pointerdown", scrubFromAnimationStage, {
+      passive: true,
+    });
+    animationStage.addEventListener("touchstart", beginMobileSwipe, {
+      passive: true,
+    });
+    animationStage.addEventListener("touchmove", moveMobileSwipe, {
+      passive: false,
+    });
+    animationStage.addEventListener("touchend", endMobileSwipe, {
+      passive: true,
+    });
+    animationStage.addEventListener("touchcancel", endMobileSwipe, {
       passive: true,
     });
   }

@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.py[cod]
+
+.env
+.env.*
+!.env.example
+
+web/data/visitor_sessions.jsonl
+web/data/visitor_sessions/
+
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

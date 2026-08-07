@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=70"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "growth-network"
+version = "2.3.4"
+description = "Capillary-red museum visitor trajectory projection system"
+requires-python = ">=3.12"
+dependencies = [
+    "networkx>=3.3,<4",
+    "pygame-ce>=2.5.7,<3",
+]
+
+[project.scripts]
+growth-network = "growth_network:main"
+
+[tool.setuptools]
+py-modules = ["growth_network"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"

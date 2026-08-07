@@ -1,0 +1,13 @@
+Source,Target,Count,AvgDwell,Thickness,Density
+Brain,Eye,3,32.83,0.657,0.500
+Brain,Heart,4,28.62,0.572,0.667
+Brain,Lung,5,30.80,0.616,0.833
+Eye,Brain,5,30.10,0.602,0.833
+Eye,Heart,4,30.88,0.618,0.667
+Eye,Lung,4,28.75,0.575,0.667
+Heart,Brain,5,32.40,0.648,0.833
+Heart,Eye,6,28.50,0.570,1.000
+Heart,Lung,5,35.60,0.712,0.833
+Lung,Brain,4,33.62,0.672,0.667
+Lung,Eye,5,29.10,0.582,0.833
+Lung,Heart,6,29.00,0.580,1.000

@@ -1,0 +1,2 @@
+networkx>=3.3,<4
+pygame-ce>=2.5.7,<3

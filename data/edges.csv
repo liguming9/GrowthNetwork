@@ -1,0 +1,13 @@
+Source,Target,Weight,AverageDwell,DeepVisitCount
+Brain,Eye,3,27.33,1
+Brain,Heart,4,26.75,1
+Brain,Lung,5,31.40,3
+Eye,Brain,5,32.20,3
+Eye,Heart,4,38.00,4
+Eye,Lung,4,28.50,2
+Heart,Brain,5,36.00,4
+Heart,Eye,6,25.50,1
+Heart,Lung,5,41.40,4
+Lung,Brain,4,22.00,0
+Lung,Eye,5,24.20,1
+Lung,Heart,6,30.00,3

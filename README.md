@@ -63,11 +63,22 @@ The `web` directory contains an exhibition-site presentation built around the sa
 
 The page now begins with a four-exhibit visitor study. After selecting **Enter**, a visitor can open Brain, Eye, Heart, and Lung in any order. Each detail view measures real dwell time; completing the fourth exhibit records the unique visitor ID, first-view sequence, per-exhibit dwell totals, and individual view events. The result page automatically selects **Your journey**. Its purple route reuses the exact existing arterial points and node-rooted capillary branches from `web_network.json`: no new path geometry is generated. Pointer movement replays the chosen order, while longer dwell selects more of the existing local branch hierarchy.
 
-Completed sessions are always retained in browser storage. For central file-based recording, use the supplied local server; it validates each session and appends it to `web/data/visitor_sessions.jsonl`:
+Completed sessions are always retained in browser storage. The supplied server validates each session and appends a local backup to `web/data/visitor_sessions.jsonl`:
 
 ```powershell
 python web_server.py
 ```
+
+When the four GitHub environment variables below are present, the same endpoint also stores each completed session as an independent JSON file in a private repository. One file per session prevents concurrent visitors from replacing a shared file. The fine-grained token must have **Contents: read and write** access only to the private data repository.
+
+```text
+GITHUB_TOKEN=<fine-grained token; never commit this value>
+GITHUB_OWNER=liguming9
+GITHUB_DATA_REPO=GrowthNetwork-Visitor-Data
+GITHUB_DATA_BRANCH=main
+```
+
+The browser never receives the token. If GitHub storage is unavailable, the API returns an error while retaining the best-effort local backup. `GET /api/health` reports whether the running service is configured for `github` or `local` storage without exposing credentials.
 
 The existing static-server command remains supported when server-side recording is not required:
 
@@ -80,6 +91,19 @@ Then open:
 ```text
 http://localhost:8000/web/
 ```
+
+### Public Render deployment
+
+The repository includes `render.yaml` and `.python-version`. Render can therefore serve the static exhibition page and the narrow Python recording endpoint from the same HTTPS origin; no cross-origin browser permissions are required.
+
+1. In Render, choose **New > Blueprint** and connect the public `liguming9/GrowthNetwork` repository.
+2. Render reads `render.yaml` and asks for `GITHUB_TOKEN` because the secret is declared with `sync: false`.
+3. Paste the fine-grained token into Render's secret field. Do not put it in GitHub, `app.js`, screenshots, or support messages.
+4. Create the Blueprint and wait for the health check to pass.
+5. Open `https://<render-service>.onrender.com/web/` and complete one four-exhibit test.
+6. Confirm that a new file appears under `sessions/YYYY-MM-DD/` in the private data repository.
+
+The Render build deliberately compiles only `web_server.py`; the public browser service does not require pygame, NetworkX, or a display. Regenerating the desktop and Blender geometry remains a separate local workflow.
 
 The browser uses three independent clocks so short-term observation, long-term exhibition memory, and one visitor's study are not conflated. The segmented control above the network selects which clock the pointer scrubs. **On-site data** controls the red connections between exhibits; **Exhibition memory** controls only the blue vessels on the anatomical images; **Your journey** controls the purple overlay made from the recorded pre-test. On-site arteries replay all visitor movements at their deterministic, staggered start times. A traversal begins at its real source node, so reverse records grow from the opposite end of the same centreline. Every completed traversal reinforces that centreline's local thickness; no parallel copy is created. On desktop, left-to-right means beginning-to-present. The network is proportionally reduced and shifted into the right-hand field so it does not collide with the curatorial title. On mobile, the complete network rotates clockwise by 90 degrees, fills a taller stage, and uses top-to-bottom pointer movement; organ images and labels are counter-rotated so they remain upright. Switching modes, replaying, resetting, or scrubbing one clock never changes the others.
 

@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: growthnetwork
+    runtime: python
+    plan: free
+    buildCommand: python -m py_compile web_server.py
+    startCommand: python web_server.py --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: GITHUB_TOKEN
+        sync: false
+      - key: GITHUB_OWNER
+        value: liguming9
+      - key: GITHUB_DATA_REPO
+        value: GrowthNetwork-Visitor-Data
+      - key: GITHUB_DATA_BRANCH
+        value: main

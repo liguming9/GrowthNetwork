@@ -172,6 +172,30 @@
       </section>
     </section>
 
+    <section class="editorial-section memory-scales" aria-labelledby="memory-scales-title">
+      <header class="section-heading compact-heading">
+        <p class="section-kicker">Three scales of memory</p>
+        <h2 id="memory-scales-title">One visit can be read<br>at three different scales.</h2>
+      </header>
+      <div class="memory-scale-list">
+        <article class="memory-scale personal-scale">
+          <p>Your journey</p>
+          <h3>This is me.</h3>
+          <span>A personal trace of your route, viewing order and time with each exhibit.</span>
+        </article>
+        <article class="memory-scale session-scale">
+          <p>Session trace</p>
+          <h3>This was us.</h3>
+          <span>Individual journeys from the same session combine into a shared network.</span>
+        </article>
+        <article class="memory-scale exhibition-scale">
+          <p>Exhibition memory</p>
+          <h3>This is what we left behind.</h3>
+          <span>Completed sessions gradually accumulate into a longer history of the exhibition.</span>
+        </article>
+      </div>
+    </section>
+
     <section class="mode-story" aria-live="polite">
       <article id="journey-view" class="journey-view mode-panel">
         <div class="mode-panel-intro">
@@ -275,52 +299,40 @@
       </header>
       <div class="exhibit-editorial-grid">
         <article class="exhibit-editorial">
-          <div class="editorial-organ"><img src="./assets/brain.png" alt="White sculptural model of a brain"></div>
+          <button class="editorial-organ-button" type="button" data-exhibit-info="Brain" aria-label="View the Brain exhibit introduction">
+            <span class="editorial-organ"><img src="./assets/brain.png" alt="White sculptural model of a brain"></span>
+            <span class="editorial-view-label">View exhibit <span aria-hidden="true">↗</span></span>
+          </button>
           <p>01 — Brain</p>
           <h3>Connection</h3>
           <span>Thought, memory and connection.</span>
         </article>
         <article class="exhibit-editorial">
-          <div class="editorial-organ"><img src="./assets/eye.png" alt="White sculptural model of an eye"></div>
+          <button class="editorial-organ-button" type="button" data-exhibit-info="Eye" aria-label="View the Eye exhibit introduction">
+            <span class="editorial-organ"><img src="./assets/eye.png" alt="White sculptural model of an eye"></span>
+            <span class="editorial-view-label">View exhibit <span aria-hidden="true">↗</span></span>
+          </button>
           <p>02 — Eye</p>
           <h3>Perception</h3>
           <span>Vision, perception and observation.</span>
         </article>
         <article class="exhibit-editorial">
-          <div class="editorial-organ"><img src="./assets/heart.png" alt="White sculptural model of a heart"></div>
+          <button class="editorial-organ-button" type="button" data-exhibit-info="Heart" aria-label="View the Heart exhibit introduction">
+            <span class="editorial-organ"><img src="./assets/heart.png" alt="White sculptural model of a heart"></span>
+            <span class="editorial-view-label">View exhibit <span aria-hidden="true">↗</span></span>
+          </button>
           <p>03 — Heart</p>
           <h3>Rhythm</h3>
           <span>Rhythm, circulation and movement.</span>
         </article>
         <article class="exhibit-editorial">
-          <div class="editorial-organ"><img src="./assets/lung.png" alt="White sculptural model of lungs"></div>
+          <button class="editorial-organ-button" type="button" data-exhibit-info="Lung" aria-label="View the Lung exhibit introduction">
+            <span class="editorial-organ"><img src="./assets/lung.png" alt="White sculptural model of lungs"></span>
+            <span class="editorial-view-label">View exhibit <span aria-hidden="true">↗</span></span>
+          </button>
           <p>04 — Lung</p>
           <h3>Exchange</h3>
           <span>Breath, exchange and flow.</span>
-        </article>
-      </div>
-    </section>
-
-    <section class="editorial-section memory-scales" aria-labelledby="memory-scales-title">
-      <header class="section-heading compact-heading">
-        <p class="section-kicker">Three scales of memory</p>
-        <h2 id="memory-scales-title">One visit can be read<br>at three different scales.</h2>
-      </header>
-      <div class="memory-scale-list">
-        <article class="memory-scale personal-scale">
-          <p>Your journey</p>
-          <h3>This is me.</h3>
-          <span>A personal trace of your route, viewing order and time with each exhibit.</span>
-        </article>
-        <article class="memory-scale session-scale">
-          <p>Session trace</p>
-          <h3>This was us.</h3>
-          <span>Individual journeys from the same session combine into a shared network.</span>
-        </article>
-        <article class="memory-scale exhibition-scale">
-          <p>Exhibition memory</p>
-          <h3>This is what we left behind.</h3>
-          <span>Completed sessions gradually accumulate into a longer history of the exhibition.</span>
         </article>
       </div>
     </section>
@@ -496,6 +508,22 @@
       <span>© 2026</span>
     </footer>
   </main>
+
+  <dialog id="exhibition-info-dialog" class="exhibition-info-dialog" aria-labelledby="exhibition-info-title">
+    <button id="close-exhibition-info-icon" class="exhibition-info-close" type="button" aria-label="Close exhibit introduction">×</button>
+    <div class="exhibition-info-layout">
+      <div class="exhibition-info-image-wrap">
+        <img id="exhibition-info-image" src="" alt="">
+      </div>
+      <div class="exhibition-info-copy">
+        <p id="exhibition-info-index" class="test-kicker"></p>
+        <h2 id="exhibition-info-title"></h2>
+        <p id="exhibition-info-description" class="exhibition-info-description"></p>
+        <p id="exhibition-info-question" class="exhibition-info-question"></p>
+        <button id="close-exhibition-info" class="editorial-action" type="button">Return to exhibition</button>
+      </div>
+    </div>
+  </dialog>
 
   <script src="./app.js" defer></script>
 </body>

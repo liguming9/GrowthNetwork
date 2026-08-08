@@ -62,6 +62,15 @@
   const journeyOrder = document.getElementById("journey-order");
   const journeyTotalTime = document.getElementById("journey-total-time");
   const journeyLongestStop = document.getElementById("journey-longest-stop");
+  const exhibitInfoButtons = [...document.querySelectorAll("[data-exhibit-info]")];
+  const exhibitionInfoDialog = document.getElementById("exhibition-info-dialog");
+  const exhibitionInfoIndex = document.getElementById("exhibition-info-index");
+  const exhibitionInfoTitle = document.getElementById("exhibition-info-title");
+  const exhibitionInfoImage = document.getElementById("exhibition-info-image");
+  const exhibitionInfoDescription = document.getElementById("exhibition-info-description");
+  const exhibitionInfoQuestion = document.getElementById("exhibition-info-question");
+  const closeExhibitionInfoButton = document.getElementById("close-exhibition-info");
+  const closeExhibitionInfoIcon = document.getElementById("close-exhibition-info-icon");
 
   const visitorTest = document.getElementById("visitor-test");
   const testWelcome = document.getElementById("test-welcome");
@@ -80,7 +89,7 @@
 
   const exhibitContent = {
     Brain: {
-      index: "Exhibit 01 / Neural memory",
+      index: "Exhibit 01 / Connection",
       image: "./assets/brain.png",
       alt: "White sculptural model of a brain",
       description: "The brain work considers memory as a living system: signals strengthen when they are revisited, while quieter connections remain as faint traces.",
@@ -94,7 +103,7 @@
       question: "How does looking change the thing being observed?",
     },
     Heart: {
-      index: "Exhibit 03 / Circulation",
+      index: "Exhibit 03 / Rhythm",
       image: "./assets/heart.png",
       alt: "White sculptural model of a heart",
       description: "The heart anchors the exhibition's vascular language. Repeated movement becomes circulation, joining individual encounters into a shared spatial rhythm.",
@@ -409,6 +418,26 @@
       setActiveLayer("exhibition");
       animationStage.scrollIntoView({ behavior: "smooth", block: "start" });
     });
+    for (const button of exhibitInfoButtons) {
+      button.addEventListener("click", () => {
+        const nodeId = button.dataset.exhibitInfo;
+        const content = exhibitContent[nodeId];
+        if (!content) {
+          return;
+        }
+        // This post-visit information view is intentionally separate from the
+        // timed study dialog: opening it never changes the participant record.
+        exhibitionInfoIndex.textContent = content.index;
+        exhibitionInfoTitle.textContent = nodeId;
+        exhibitionInfoImage.src = content.image;
+        exhibitionInfoImage.alt = content.alt;
+        exhibitionInfoDescription.textContent = content.description;
+        exhibitionInfoQuestion.textContent = content.question;
+        exhibitionInfoDialog.showModal();
+      });
+    }
+    closeExhibitionInfoButton.addEventListener("click", () => exhibitionInfoDialog.close());
+    closeExhibitionInfoIcon.addEventListener("click", () => exhibitionInfoDialog.close());
   }
 
   function finishExhibit() {

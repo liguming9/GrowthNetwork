@@ -1456,7 +1456,7 @@ input:focus-visible {
 }
 
 .inside-us-hero #network-canvas {
-  height: 590px;
+  height: 456px;
 }
 
 .inside-us-hero::after {
@@ -1466,7 +1466,7 @@ input:focus-visible {
 }
 
 .inside-us-hero .hero-copy {
-  top: clamp(7rem, 13vw, 9.5rem);
+  top: clamp(4.25rem, 7vw, 5.5rem);
   left: clamp(1.25rem, 4.2vw, 5rem);
   width: min(365px, 30vw);
 }

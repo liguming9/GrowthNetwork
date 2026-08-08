@@ -236,6 +236,11 @@ body {
   transition: transform 240ms ease;
 }
 
+.exhibit-choice[data-exhibit-id="Heart"] .choice-image img {
+  width: 76%;
+  height: 76%;
+}
+
 .exhibit-choice:hover .choice-image,
 .exhibit-choice:focus-visible .choice-image {
   background: transparent;
@@ -1541,7 +1546,9 @@ input:focus-visible {
 }
 
 .mode-panel-intro h2 {
-  font-size: clamp(2.5rem, 4.6vw, 5.2rem);
+  max-width: 760px;
+  font-size: clamp(1.9rem, 2.3vw, 2.8rem);
+  line-height: 1.04;
 }
 
 .mode-panel-intro > p:not(.section-kicker) {
@@ -1784,7 +1791,8 @@ input:focus-visible {
 }
 
 .section-heading h2 {
-  font-size: clamp(3rem, 5.6vw, 6.4rem);
+  font-size: clamp(1.9rem, 2.3vw, 2.8rem);
+  line-height: 1.04;
 }
 
 .section-heading > p:last-child {
@@ -1898,6 +1906,11 @@ input:focus-visible {
   object-fit: contain;
   filter: drop-shadow(0 16px 12px rgba(36, 29, 24, 0.13));
   transition: transform 240ms ease;
+}
+
+.editorial-organ-button[data-exhibit-info="Heart"] .editorial-organ img {
+  width: 79%;
+  height: 79%;
 }
 
 .editorial-organ-button:hover .editorial-organ,
@@ -2057,8 +2070,9 @@ input:focus-visible {
 }
 
 .memory-reflection h2 {
-  max-width: 680px;
-  font-size: clamp(3.2rem, 6vw, 7rem);
+  max-width: 760px;
+  font-size: clamp(1.9rem, 2.3vw, 2.8rem);
+  line-height: 1.04;
 }
 
 .memory-reflection-copy > p:not(.section-kicker) {
@@ -2130,8 +2144,29 @@ input:focus-visible {
 }
 
 .mapping-list i {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-width: 2.75rem;
+  height: 0;
+  align-self: center;
+  border-top: 1.5px dashed var(--red);
   color: var(--red);
+  font-size: 0;
   font-style: normal;
+}
+
+.mapping-list i::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 0.48rem;
+  height: 0.48rem;
+  border-top: 1.5px solid var(--red);
+  border-right: 1.5px solid var(--red);
+  transform: translateY(-50%) rotate(45deg);
+  transform-origin: center;
 }
 
 .mapping-list p {
@@ -2149,7 +2184,8 @@ input:focus-visible {
 
 .visit-section h2,
 .project-context h2 {
-  font-size: clamp(3rem, 6vw, 7rem);
+  font-size: clamp(1.9rem, 2.3vw, 2.8rem);
+  line-height: 1.04;
 }
 
 .visit-section > div > p:last-child {
@@ -2505,7 +2541,8 @@ input:focus-visible {
   }
 
   .section-heading h2 {
-    font-size: clamp(2.8rem, 14vw, 4.8rem);
+    font-size: clamp(1.85rem, 8.5vw, 2.5rem);
+    line-height: 1.04;
   }
 
   .exhibit-editorial-grid {

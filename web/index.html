@@ -125,6 +125,11 @@
       </div>
     </header>
 
+    <aside class="returning-visitor-note" aria-label="Returning visitor information">
+      <strong>Welcome back, Visitor V017</strong>
+      <span>Your visit · 10 July 2026</span>
+    </aside>
+
     <section id="exhibition" class="hero inside-us-hero" aria-labelledby="hero-title">
       <div class="hero-copy">
         <p class="eyebrow">Visitor-generated capillary network</p>
@@ -181,7 +186,10 @@
       <div id="exhibition-date-strip" class="exhibition-date-strip" aria-label="Exhibition timeline from 1 July to 30 July 2026">
         <div class="date-strip-heading">
           <span>Opening · 01 July 2026</span>
-          <strong id="timeline-current-date">01 July 2026</strong>
+          <div class="timeline-current-state" aria-live="polite">
+            <strong id="timeline-current-date">01 July 2026</strong>
+            <span id="timeline-current-visitors">0 accumulated visitors</span>
+          </div>
           <span>End · 30 July 2026</span>
         </div>
         <div id="date-timeline-viewport" class="date-timeline-viewport">

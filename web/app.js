@@ -40,6 +40,7 @@
   const dateTimelineViewport = document.getElementById("date-timeline-viewport");
   const dateTimelineTrack = document.getElementById("date-timeline-track");
   const timelineCurrentDate = document.getElementById("timeline-current-date");
+  const timelineCurrentVisitors = document.getElementById("timeline-current-visitors");
   const personalTimelineGroup = document.getElementById("personal-timeline-group");
   const personalTimelineInput = document.getElementById("personal-timeline");
   const personalPlayPauseButton = document.getElementById("personal-play-pause");
@@ -149,6 +150,7 @@
     pointerDriven: true,
     dateTicks: [],
     activeExhibitionDay: -1,
+    visitorArrivalTimes: [],
   };
 
   const testState = {
@@ -680,6 +682,21 @@
   function prepareData(data) {
     state.data = data;
     state.branches = data.branches.map(prepareBranch);
+    const arrivalByVisitor = new Map();
+    for (const branch of data.branches) {
+      for (const traversal of branch.traversals || []) {
+        const visitorId = String(traversal.visitorId ?? "");
+        const startTime = Number(traversal.startTime);
+        if (!visitorId || !Number.isFinite(startTime)) {
+          continue;
+        }
+        const previousArrival = arrivalByVisitor.get(visitorId);
+        if (previousArrival === undefined || startTime < previousArrival) {
+          arrivalByVisitor.set(visitorId, startTime);
+        }
+      }
+    }
+    state.visitorArrivalTimes = [...arrivalByVisitor.values()].sort((first, second) => first - second);
     state.nodes = data.nodes.map((node, index) => {
       const organVessels = createOrganVessels(node);
       const organScheduleEnd = Math.max(
@@ -899,7 +916,9 @@
       tick.append(dayNumber, annotation);
       tick.addEventListener("click", () => {
         state.exhibitionTime = (day - 1) / (dayCount - 1) * state.exhibitionDuration;
+        state.playing = false;
         state.exhibitionPlaying = false;
+        state.personalPlaying = false;
         state.activeExhibitionDay = -1;
         setActiveLayer("exhibition");
         render(performance.now());
@@ -937,6 +956,17 @@
     }
     const activeDay = activeIndex + 1;
     timelineCurrentDate.textContent = `${String(activeDay).padStart(2, "0")} July 2026`;
+    const totalVisitors = Math.max(0, Number(state.data.summary?.visitorCount) || 0);
+    const accumulatedVisitors = state.visitorArrivalTimes.length > 0
+      ? state.visitorArrivalTimes.filter((arrivalTime) => (
+        arrivalTime <= state.exhibitionTime + 0.0001
+      )).length
+      : state.dateTicks.length <= 1
+        ? totalVisitors
+        : Math.round(activeIndex / (state.dateTicks.length - 1) * totalVisitors);
+    timelineCurrentVisitors.textContent = `${accumulatedVisitors} accumulated ${
+      accumulatedVisitors === 1 ? "visitor" : "visitors"
+    }`;
 
     const activeTick = state.dateTicks[activeIndex];
     const targetLeft = activeTick.offsetLeft + activeTick.offsetWidth * 0.5

@@ -50,12 +50,36 @@ body {
 }
 
 .test-welcome {
+  position: relative;
   display: grid;
+  isolation: isolate;
   width: min(760px, 100%);
   min-height: calc(100vh - clamp(2.5rem, 8vw, 7rem));
   align-content: center;
   justify-items: start;
   margin: 0 auto;
+}
+
+.test-welcome::before {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 0;
+  color: rgba(215, 39, 31, 0.038);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(10rem, 24vw, 28rem);
+  font-weight: 400;
+  letter-spacing: -0.075em;
+  line-height: 0.8;
+  white-space: nowrap;
+  pointer-events: none;
+  content: "Inside Us";
+  transform: translate(-50%, -50%);
+}
+
+.test-welcome > * {
+  position: relative;
+  z-index: 1;
 }
 
 .test-mark {
@@ -638,6 +662,20 @@ input:focus-visible {
   font-family: Georgia, "Times New Roman", serif;
   font-size: 1.05rem;
   font-weight: 400;
+}
+
+.timeline-current-state {
+  display: grid;
+  justify-items: center;
+  gap: 0.15rem;
+}
+
+.timeline-current-state > span {
+  color: var(--blue);
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .date-timeline-viewport {
@@ -1345,6 +1383,36 @@ input:focus-visible {
   background: var(--paper);
 }
 
+.returning-visitor-note {
+  position: fixed;
+  right: clamp(0.8rem, 2vw, 1.8rem);
+  bottom: clamp(0.8rem, 2vw, 1.6rem);
+  z-index: 30;
+  display: grid;
+  justify-items: end;
+  gap: 0.18rem;
+  padding: 0.7rem 0.85rem 0.65rem;
+  color: var(--ink);
+  text-align: right;
+  background: rgba(251, 250, 247, 0.91);
+  border-top: 1px solid var(--red);
+  backdrop-filter: blur(7px);
+  pointer-events: none;
+}
+
+.returning-visitor-note strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 0.98rem;
+  font-weight: 400;
+}
+
+.returning-visitor-note span {
+  color: var(--red);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 #app .site-header {
   display: grid;
   grid-template-columns: minmax(280px, 1fr) auto auto;
@@ -1378,8 +1446,12 @@ input:focus-visible {
 }
 
 .inside-us-hero {
-  height: clamp(620px, 72vw, 760px);
-  min-height: 620px;
+  height: 456px;
+  min-height: 456px;
+}
+
+.inside-us-hero #network-canvas {
+  height: 590px;
 }
 
 .inside-us-hero::after {
@@ -1626,17 +1698,17 @@ input:focus-visible {
 
 .timeline-section {
   display: grid;
-  grid-template-columns: minmax(210px, 0.34fr) minmax(0, 1.66fr);
+  grid-template-columns: minmax(260px, 0.4fr) minmax(0, 1.6fr);
   align-items: center;
-  gap: clamp(2rem, 4vw, 5rem);
-  padding: clamp(1.6rem, 2.6vw, 2.7rem) clamp(1rem, 4vw, 5rem);
+  gap: clamp(1.5rem, 3vw, 3.5rem);
+  padding: clamp(1rem, 1.6vw, 1.7rem) clamp(1rem, 4vw, 5rem);
   border-bottom: 1px solid var(--line);
 }
 
 .timeline-intro h2 {
   margin: 0;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(1.8rem, 2.6vw, 3rem);
+  font-size: clamp(1.55rem, 2vw, 2.2rem);
   font-weight: 400;
   letter-spacing: -0.035em;
   line-height: 0.98;
@@ -1644,30 +1716,30 @@ input:focus-visible {
 
 .timeline-intro > p:last-child {
   max-width: 360px;
-  margin: 0.8rem 0 0;
+  margin: 0.55rem 0 0;
   color: var(--muted);
-  line-height: 1.7;
+  line-height: 1.5;
 }
 
 .timeline-section .exhibition-date-strip {
   grid-template-columns: 1fr;
   gap: 0.7rem;
-  min-height: 112px;
+  min-height: 94px;
   padding: 0;
   background: transparent;
   border: 0;
 }
 
 .timeline-section .date-timeline-track {
-  min-height: 58px;
+  min-height: 52px;
 }
 
 .timeline-section .date-timeline-track::before {
-  top: 26px;
+  top: 23px;
 }
 
 .timeline-section .date-tick {
-  height: 56px;
+  height: 50px;
 }
 
 .timeline-section .date-strip-heading {
@@ -2302,6 +2374,20 @@ input:focus-visible {
   #app .brand-name {
     font-size: 0.66rem;
     letter-spacing: 0.22em;
+  }
+
+  .returning-visitor-note {
+    right: 0.55rem;
+    bottom: 0.55rem;
+    padding: 0.5rem 0.6rem;
+  }
+
+  .returning-visitor-note strong {
+    font-size: 0.82rem;
+  }
+
+  .returning-visitor-note span {
+    font-size: 0.5rem;
   }
 
   .experience-option {

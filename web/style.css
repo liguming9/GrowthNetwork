@@ -175,10 +175,12 @@ body {
   border: 0;
   border-bottom: 1px solid var(--line-dark);
   cursor: pointer;
+  transition: background-color 240ms ease, border-color 240ms ease;
 }
 
 .exhibit-choice:hover,
 .exhibit-choice:focus-visible {
+  background: rgba(220, 40, 40, 0.032);
   border-bottom-color: var(--red);
 }
 
@@ -207,11 +209,17 @@ body {
   height: 84%;
   object-fit: contain;
   filter: drop-shadow(0 13px 10px rgba(33, 27, 22, 0.15));
+  transition: transform 240ms ease;
 }
 
 .exhibit-choice:hover .choice-image,
 .exhibit-choice:focus-visible .choice-image {
-  background: #1b1917;
+  background: transparent;
+}
+
+.exhibit-choice:hover .choice-image img,
+.exhibit-choice:focus-visible .choice-image img {
+  transform: scale(1.02);
 }
 
 .choice-name {
@@ -1736,6 +1744,7 @@ input:focus-visible {
   background: transparent;
   border: 0;
   cursor: pointer;
+  transition: background-color 240ms ease;
 }
 
 .editorial-organ-button .editorial-organ {
@@ -1743,6 +1752,7 @@ input:focus-visible {
 }
 
 .editorial-view-label {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1756,10 +1766,45 @@ input:focus-visible {
   transition: color 180ms ease, border-color 180ms ease;
 }
 
+.editorial-view-copy {
+  display: grid;
+}
+
+.editorial-view-idle,
+.editorial-view-active {
+  grid-area: 1 / 1;
+  transition: opacity 200ms ease;
+}
+
+.editorial-view-active {
+  color: var(--red);
+  opacity: 0;
+}
+
 .editorial-organ-button:hover .editorial-view-label,
 .editorial-organ-button:focus-visible .editorial-view-label {
   color: var(--red);
   border-color: var(--red);
+}
+
+.editorial-organ-button:hover,
+.editorial-organ-button:focus-visible {
+  background: rgba(220, 40, 40, 0.032);
+}
+
+.editorial-organ-button:hover .editorial-view-idle,
+.editorial-organ-button:focus-visible .editorial-view-idle {
+  opacity: 0;
+}
+
+.editorial-organ-button:hover .editorial-view-active,
+.editorial-organ-button:focus-visible .editorial-view-active {
+  opacity: 1;
+}
+
+.editorial-organ-button:hover .editorial-view-arrow,
+.editorial-organ-button:focus-visible .editorial-view-arrow {
+  color: var(--red);
 }
 
 .editorial-organ img {
@@ -1767,11 +1812,17 @@ input:focus-visible {
   height: 88%;
   object-fit: contain;
   filter: drop-shadow(0 16px 12px rgba(36, 29, 24, 0.13));
+  transition: transform 240ms ease;
 }
 
 .editorial-organ-button:hover .editorial-organ,
 .editorial-organ-button:focus-visible .editorial-organ {
-  background: #1b1917;
+  background: transparent;
+}
+
+.editorial-organ-button:hover .editorial-organ img,
+.editorial-organ-button:focus-visible .editorial-organ img {
+  transform: scale(1.02);
 }
 
 .exhibit-editorial > p {

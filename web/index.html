@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#fbfaf7">
-  <title>Living Trace — Co-creative Exhibition</title>
+  <title>Inside Us — Co-creative Exhibition</title>
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -25,7 +25,7 @@
         <div>
           <p class="test-kicker">Choose freely</p>
           <h1>Select an exhibit to view</h1>
-          <p>Open every exhibit once. Your order and dwell time will form your personal trace.</p>
+          <p>Open every exhibit once. Your order and viewing time will form your personal trace.</p>
         </div>
         <div class="picker-progress" aria-live="polite">
           <strong id="viewed-count">0 / 4</strong>
@@ -83,11 +83,27 @@
     </dialog>
   </section>
 
-  <main id="app" data-active-layer="onsite" hidden>
+  <section id="visit-complete" class="visit-complete" aria-labelledby="visit-complete-title" hidden>
+    <div class="visit-complete-inner">
+      <span class="completion-mark" aria-hidden="true"></span>
+      <p class="test-kicker">Visit complete</p>
+      <h1 id="visit-complete-title">Your trace has<br>been recorded.</h1>
+      <p>
+        Your route and viewing time have created a personal record.<br>
+        See how your visit becomes part of a wider exhibition trace.
+      </p>
+      <button id="view-my-journey" class="test-primary-action" type="button">
+        View My Journey
+      </button>
+      <span class="completion-destination">Continue to Inside Us</span>
+    </div>
+  </section>
+
+  <main id="app" data-active-layer="onsite" data-experience-mode="journey" hidden>
     <header class="site-header">
-      <a class="brand" href="#exhibition" aria-label="Living Trace home">
+      <a class="brand" href="#exhibition" aria-label="Inside Us home">
         <span class="brand-mark" aria-hidden="true"></span>
-        <span class="brand-name">Living Trace</span>
+        <span class="brand-name">Inside Us</span>
         <span class="brand-divider" aria-hidden="true"></span>
         <span class="brand-subtitle">Co-creative Exhibition</span>
       </a>
@@ -97,14 +113,22 @@
         <a href="#method">Method</a>
         <a href="#exhibition">Exhibition</a>
         <a href="#credits">Credits</a>
-        <a class="nav-feature" href="#method">How it works <span aria-hidden="true">ⓘ</span></a>
       </nav>
+
+      <div class="experience-switch" role="group" aria-label="Website view">
+        <button id="mode-my-journey" class="experience-option is-active" type="button" aria-pressed="true">
+          My Journey
+        </button>
+        <button id="mode-shared-space" class="experience-option" type="button" aria-pressed="false">
+          Shared Space
+        </button>
+      </div>
     </header>
 
-    <section id="exhibition" class="hero" aria-labelledby="hero-title">
-      <div class="hero-copy" id="about">
+    <section id="exhibition" class="hero inside-us-hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
         <p class="eyebrow">Visitor-generated capillary network</p>
-        <h1 id="hero-title">A Living Trace of<br>Visitor Movement</h1>
+        <h1 id="hero-title">Inside<br>Us</h1>
         <span class="red-rule" aria-hidden="true"></span>
         <p>
           Every step becomes part of a growing network connecting the exhibits.
@@ -125,7 +149,7 @@
           </button>
         </div>
         <button id="replay-active" class="replay-button" type="button">
-          <span aria-hidden="true">↻</span> Replay
+          <span aria-hidden="true">↻</span> Replay Session
         </button>
       </div>
 
@@ -136,7 +160,7 @@
       <canvas
         id="network-canvas"
         role="img"
-        aria-label="Interactive red capillary network connecting Brain, Eye, Heart, and Lung"
+        aria-label="Interactive capillary network connecting Brain, Eye, Heart, and Lung"
         title="Move left to right to scrub the selected growth layer"
       ></canvas>
 
@@ -148,49 +172,262 @@
       </section>
     </section>
 
-    <section id="exhibition-date-strip" class="exhibition-date-strip" aria-label="Exhibition timeline from 1 July to 30 July 2026">
+    <section class="mode-story" aria-live="polite">
+      <article id="journey-view" class="journey-view mode-panel">
+        <div class="mode-panel-intro">
+          <p class="section-kicker purple-kicker">Your visit</p>
+          <h2>A route that belongs<br>to this encounter.</h2>
+          <p class="mode-panel-note">
+            Your journey is one part of a larger shared trace.
+          </p>
+          <button id="journey-replay-button" class="editorial-action purple-action" type="button">
+            Replay My Journey
+          </button>
+          <button id="see-shared-space" class="text-link" type="button">
+            See the Shared Space <span aria-hidden="true">→</span>
+          </button>
+        </div>
+        <div class="journey-facts">
+          <div class="journey-identity">
+            <span id="journey-date">—</span>
+            <small id="journey-visitor-id">Anonymous visitor</small>
+          </div>
+          <dl>
+            <div class="journey-route-fact">
+              <dt>You visited</dt>
+              <dd id="journey-order">—</dd>
+            </div>
+            <div>
+              <dt>Time in exhibition</dt>
+              <dd id="journey-total-time">—</dd>
+            </div>
+            <div>
+              <dt>Longest stop</dt>
+              <dd id="journey-longest-stop">—</dd>
+            </div>
+          </dl>
+        </div>
+      </article>
+
+      <article id="shared-view" class="shared-view mode-panel" hidden>
+        <div class="mode-panel-intro">
+          <p class="section-kicker red-kicker">Session trace</p>
+          <h2>This was us.</h2>
+          <p>
+            Visitor journeys from the same session combine to form a shared trace.
+            Routes become stronger as more people move between the same exhibits.
+          </p>
+          <button id="shared-replay-button" class="editorial-action" type="button">
+            Replay Session
+          </button>
+        </div>
+        <div class="shared-facts">
+          <div>
+            <strong id="metric-visitors">—</strong>
+            <span>visitors</span>
+          </div>
+          <div>
+            <strong id="metric-events">—</strong>
+            <span>transitions</span>
+          </div>
+          <div class="memory-summary">
+            <p class="section-kicker blue-kicker">Exhibition memory</p>
+            <p>Each completed session leaves another layer behind.</p>
+            <button id="view-memory-button" class="text-link blue-link" type="button">
+              View Exhibition Memory <span aria-hidden="true">→</span>
+            </button>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="timeline-section" aria-labelledby="timeline-title">
+      <div class="timeline-intro">
+        <p class="section-kicker blue-kicker">Exhibition timeline</p>
+        <h2 id="timeline-title">Watch the exhibition grow</h2>
+        <p>Explore how visitor traces accumulate throughout Inside Us.</p>
+      </div>
+      <div id="exhibition-date-strip" class="exhibition-date-strip" aria-label="Exhibition timeline from 1 July to 30 July 2026">
       <div class="date-strip-heading">
-        <span>Exhibition timeline · select a date</span>
+        <span>Opening · 01 July 2026</span>
         <strong id="timeline-current-date">01 July 2026</strong>
+        <span>End · 30 July 2026</span>
       </div>
       <div id="date-timeline-viewport" class="date-timeline-viewport">
         <div id="date-timeline-track" class="date-timeline-track"></div>
       </div>
-      <div class="visitor-date-key">
+      <div id="visitor-date-key" class="visitor-date-key">
         <span aria-hidden="true"></span>
         Your visit · 10 July 2026
       </div>
+      </div>
     </section>
 
-    <section class="information-grid" aria-label="Exhibition information">
-      <article id="method" class="information-card method-card">
-        <header class="card-header">
-          <p class="card-kicker">How it works</p>
-          <span class="card-index">01—03</span>
-        </header>
-        <div class="method-steps">
-          <div class="method-step">
-            <span class="step-number">01</span>
-            <span class="step-symbol footsteps-symbol" aria-hidden="true">⌁</span>
-            <h2>Visitor movement</h2>
-            <p>People move naturally between the four exhibits.</p>
-          </div>
-          <div class="method-step">
-            <span class="step-number">02</span>
-            <span class="step-symbol target-symbol" aria-hidden="true">◎</span>
-            <h2>Data capture</h2>
-            <p>Visits, dwell time and deeper engagement are recorded.</p>
-          </div>
-          <div class="method-step">
-            <span class="step-number">03</span>
-            <span class="step-symbol branch-symbol" aria-hidden="true">⌘</span>
-            <h2>Living growth</h2>
-            <p>Each trace reinforces a shared capillary memory.</p>
-          </div>
-        </div>
-      </article>
+    <section id="about" class="editorial-section about-exhibition" aria-labelledby="about-title">
+      <header class="section-heading">
+        <p class="section-kicker red-kicker">About the exhibition</p>
+        <h2 id="about-title">Four encounters.<br>One changing trace.</h2>
+        <p>
+          Inside Us explores four familiar parts of the human body through movement,
+          connection and collective participation. Visitors are free to encounter the
+          exhibits in their own order, creating a different trace with every journey.
+        </p>
+      </header>
+      <div class="exhibit-editorial-grid">
+        <article class="exhibit-editorial">
+          <div class="editorial-organ"><img src="./assets/brain.png" alt="White sculptural model of a brain"></div>
+          <p>01 — Brain</p>
+          <h3>Connection</h3>
+          <span>Thought, memory and connection.</span>
+        </article>
+        <article class="exhibit-editorial">
+          <div class="editorial-organ"><img src="./assets/eye.png" alt="White sculptural model of an eye"></div>
+          <p>02 — Eye</p>
+          <h3>Perception</h3>
+          <span>Vision, perception and observation.</span>
+        </article>
+        <article class="exhibit-editorial">
+          <div class="editorial-organ"><img src="./assets/heart.png" alt="White sculptural model of a heart"></div>
+          <p>03 — Heart</p>
+          <h3>Rhythm</h3>
+          <span>Rhythm, circulation and movement.</span>
+        </article>
+        <article class="exhibit-editorial">
+          <div class="editorial-organ"><img src="./assets/lung.png" alt="White sculptural model of lungs"></div>
+          <p>04 — Lung</p>
+          <h3>Exchange</h3>
+          <span>Breath, exchange and flow.</span>
+        </article>
+      </div>
+    </section>
 
-      <section id="controls" class="information-card control-card" aria-label="Animation controls" hidden>
+    <section class="editorial-section memory-scales" aria-labelledby="memory-scales-title">
+      <header class="section-heading compact-heading">
+        <p class="section-kicker">Three scales of memory</p>
+        <h2 id="memory-scales-title">One visit can be read<br>at three different scales.</h2>
+      </header>
+      <div class="memory-scale-list">
+        <article class="memory-scale personal-scale">
+          <p>Your journey</p>
+          <h3>This is me.</h3>
+          <span>A personal trace of your route, viewing order and time with each exhibit.</span>
+        </article>
+        <article class="memory-scale session-scale">
+          <p>Session trace</p>
+          <h3>This was us.</h3>
+          <span>Individual journeys from the same session combine into a shared network.</span>
+        </article>
+        <article class="memory-scale exhibition-scale">
+          <p>Exhibition memory</p>
+          <h3>This is what we left behind.</h3>
+          <span>Completed sessions gradually accumulate into a longer history of the exhibition.</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="editorial-section trace-process" aria-labelledby="trace-process-title">
+      <header class="section-heading compact-heading">
+        <p class="section-kicker red-kicker">Your visit becomes a trace</p>
+        <h2 id="trace-process-title">From movement<br>to shared memory.</h2>
+      </header>
+      <div class="process-list">
+        <article>
+          <span>01 — Move</span>
+          <p>Explore the four exhibits in your own order.</p>
+        </article>
+        <article>
+          <span>02 — Leave a trace</span>
+          <p>Your route and viewing time shape a personal visual record.</p>
+        </article>
+        <article>
+          <span>03 — Become part of the whole</span>
+          <p>Your trace joins other visitors and contributes to the evolving exhibition memory.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="memory-reflection" aria-labelledby="memory-reflection-title">
+      <div class="memory-reflection-copy">
+        <p class="section-kicker blue-kicker">Exhibition memory</p>
+        <h2 id="memory-reflection-title">Every visit leaves<br>something behind.</h2>
+        <p>
+          Individual journeys end when visitors leave the gallery, but their traces
+          can remain within a collective visual memory.
+        </p>
+        <p>
+          Over time, the exhibition changes through the activity of the people who
+          move through it.
+        </p>
+      </div>
+      <div class="memory-visual" aria-hidden="true">
+        <img src="./assets/brain.png" alt="">
+        <img src="./assets/eye.png" alt="">
+        <img src="./assets/heart.png" alt="">
+        <img src="./assets/lung.png" alt="">
+        <svg viewBox="0 0 900 420" preserveAspectRatio="none">
+          <path d="M40 226 C126 126 206 294 292 206 S454 96 532 210 S704 312 860 176"/>
+          <path d="M111 191 C96 145 79 122 54 94 M126 201 C121 253 88 278 55 304 M256 225 C230 171 216 132 234 86 M438 164 C420 114 446 74 476 44 M572 227 C602 165 630 132 674 100 M734 246 C754 295 800 310 843 326"/>
+          <path d="M85 146 C58 132 45 118 30 101 M93 267 C71 280 60 300 48 329 M230 133 C204 116 190 98 184 73 M464 97 C491 81 508 61 518 34 M628 139 C650 121 664 98 668 73 M803 302 C830 286 852 280 878 283"/>
+        </svg>
+      </div>
+    </section>
+
+    <section id="method" class="editorial-section method-section" aria-labelledby="method-title">
+      <header class="section-heading compact-heading">
+        <p class="section-kicker red-kicker">Method</p>
+        <h2 id="method-title">How the trace grows</h2>
+      </header>
+      <div class="mapping-list">
+        <article>
+          <span>Visit order</span><i aria-hidden="true">→</i><strong>Connections</strong>
+          <p>The order of exhibits determines the sequence of links.</p>
+        </article>
+        <article>
+          <span>Repeated transitions</span><i aria-hidden="true">→</i><strong>Stronger routes</strong>
+          <p>Routes shared by more journeys become more visually prominent.</p>
+        </article>
+        <article>
+          <span>Viewing time</span><i aria-hidden="true">→</i><strong>Denser growth</strong>
+          <p>Longer viewing produces denser local branching.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="editorial-section visit-section" aria-labelledby="visit-title">
+      <div>
+        <p class="section-kicker">Visit Inside Us</p>
+        <h2 id="visit-title">Inside Us</h2>
+        <p>Co-creative Exhibition</p>
+      </div>
+      <div class="visit-details">
+        <p><span>Dates</span><strong>10–30 July 2026</strong></p>
+        <p><span>Location</span><strong>[Exhibition location]</strong></p>
+      </div>
+    </section>
+
+    <section id="credits" class="editorial-section project-context" aria-labelledby="project-context-title">
+      <div>
+        <p class="section-kicker">About this project</p>
+        <h2 id="project-context-title">A practice-based<br>research prototype.</h2>
+      </div>
+      <div class="project-context-copy">
+        <p>
+          Inside Us is a practice-based research project exploring how visitor movement
+          data can become both a personal trace and a shared exhibition memory.
+        </p>
+        <p class="project-credit">
+          <strong>MA Design Informatics</strong><br>
+          University of Edinburgh<br>
+          Zhuoran Zhao · 2026
+        </p>
+        <small>
+          The online experience represents a proposed physical exhibition system.
+          Behavioural input for the study was generated through the preceding browser simulation.
+        </small>
+      </div>
+    </section>
+
+    <section id="controls" class="debug-controls" aria-label="Internal animation controls" hidden>
         <header class="card-header">
           <p class="card-kicker">Growth controls</p>
           <span id="active-layer-badge" class="layer-badge">On-site</span>
@@ -248,42 +485,15 @@
           <button id="fullscreen" type="button">Fullscreen</button>
           <button id="toggle-labels" type="button" aria-pressed="true">Hide labels</button>
         </div>
-      </section>
-
-      <article class="information-card network-card">
-        <header class="card-header">
-          <p class="card-kicker">Collective network</p>
-          <span class="live-indicator"><span aria-hidden="true"></span> Live</span>
-        </header>
-        <div class="metric-grid">
-          <div class="metric-primary">
-            <span>Total visitors</span>
-            <strong id="metric-visitors">—</strong>
-          </div>
-          <div class="metric-primary">
-            <span>Branches grown</span>
-            <strong id="metric-branches">—</strong>
-          </div>
-          <div class="metric-small">
-            <strong id="metric-events">—</strong>
-            <span>Recorded events</span>
-          </div>
-          <div class="metric-small">
-            <strong id="metric-routes">—</strong>
-            <span>Exhibit routes</span>
-          </div>
-          <div class="metric-small">
-            <strong id="metric-dwell">—</strong>
-            <span>Mean dwell</span>
-          </div>
-        </div>
-      </article>
+        <span id="metric-branches">—</span>
+        <span id="metric-routes">—</span>
+        <span id="metric-dwell">—</span>
     </section>
 
-    <footer id="credits" class="site-footer">
-      <span>Co-creative. Collective. Alive.</span>
-      <span>A dissertation project exploring data embodiment and collective authorship.</span>
-      <span>GrowthNetwork</span>
+    <footer class="site-footer">
+      <span>Inside Us · Co-creative Exhibition</span>
+      <span>Personal trace · Session trace · Exhibition memory</span>
+      <span>© 2026</span>
     </footer>
   </main>
 

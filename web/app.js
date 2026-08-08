@@ -47,6 +47,21 @@
   const personalStageReadout = document.getElementById("personal-stage-readout");
   const personalTimeReadout = document.getElementById("personal-time-readout");
   const personalOrderReadout = document.getElementById("personal-order-readout");
+  const visitComplete = document.getElementById("visit-complete");
+  const viewMyJourneyButton = document.getElementById("view-my-journey");
+  const myJourneyModeButton = document.getElementById("mode-my-journey");
+  const sharedSpaceModeButton = document.getElementById("mode-shared-space");
+  const journeyView = document.getElementById("journey-view");
+  const sharedView = document.getElementById("shared-view");
+  const journeyReplayButton = document.getElementById("journey-replay-button");
+  const sharedReplayButton = document.getElementById("shared-replay-button");
+  const seeSharedSpaceButton = document.getElementById("see-shared-space");
+  const viewMemoryButton = document.getElementById("view-memory-button");
+  const journeyDate = document.getElementById("journey-date");
+  const journeyVisitorId = document.getElementById("journey-visitor-id");
+  const journeyOrder = document.getElementById("journey-order");
+  const journeyTotalTime = document.getElementById("journey-total-time");
+  const journeyLongestStop = document.getElementById("journey-longest-stop");
 
   const visitorTest = document.getElementById("visitor-test");
   const testWelcome = document.getElementById("test-welcome");
@@ -111,6 +126,7 @@
     personalPlaying: false,
     personalSession: null,
     personalJourney: null,
+    experienceMode: "journey",
     activeLayer: "onsite",
     labelsVisible: true,
     previousFrame: null,
@@ -279,9 +295,120 @@
     persistVisitorSession(session);
     state.personalSession = session;
     visitorTest.hidden = true;
+    visitComplete.hidden = false;
+    app.hidden = true;
+    window.scrollTo({ top: 0, behavior: "auto" });
+    updateVisitorFacingContent();
+  }
+
+  function formatRecordedDuration(seconds) {
+    const safeSeconds = Math.max(0, Number(seconds) || 0);
+    if (safeSeconds < 60) {
+      return `${safeSeconds.toFixed(1)} seconds`;
+    }
+    const minutes = Math.floor(safeSeconds / 60);
+    const remainder = Math.round(safeSeconds - minutes * 60);
+    return remainder > 0 ? `${minutes}m ${remainder}s` : `${minutes} min`;
+  }
+
+  function formatRecordedDate(isoValue) {
+    const date = new Date(isoValue);
+    if (Number.isNaN(date.getTime())) {
+      return "Visit date unavailable";
+    }
+    return new Intl.DateTimeFormat("en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(date);
+  }
+
+  function updateVisitorFacingContent() {
+    const session = state.personalSession;
+    if (!session) {
+      journeyDate.textContent = "Complete the study to create a visit";
+      journeyVisitorId.textContent = "Anonymous visitor";
+      journeyOrder.textContent = "—";
+      journeyTotalTime.textContent = "—";
+      journeyLongestStop.textContent = "—";
+      return;
+    }
+
+    const dwellEntries = session.order.map((nodeId) => [
+      nodeId,
+      Math.max(0, Number(session.dwellByNode[nodeId]) || 0),
+    ]);
+    const totalSeconds = dwellEntries.reduce((total, entry) => total + entry[1], 0);
+    const longestStop = dwellEntries.reduce(
+      (longest, entry) => entry[1] > longest[1] ? entry : longest,
+      ["—", 0],
+    );
+
+    journeyDate.textContent = formatRecordedDate(session.completedAt || session.startedAt);
+    journeyVisitorId.textContent = `Anonymous visitor · ${session.visitorId}`;
+    journeyOrder.textContent = session.order.join(" → ");
+    journeyTotalTime.textContent = formatRecordedDuration(totalSeconds);
+    journeyLongestStop.textContent = longestStop[0] === "—"
+      ? "—"
+      : `${longestStop[0]} · ${formatRecordedDuration(longestStop[1])}`;
+  }
+
+  function setExperienceMode(mode) {
+    const showJourney = mode !== "shared";
+    state.experienceMode = showJourney ? "journey" : "shared";
+    app.dataset.experienceMode = state.experienceMode;
+    journeyView.hidden = !showJourney;
+    sharedView.hidden = showJourney;
+    myJourneyModeButton.classList.toggle("is-active", showJourney);
+    sharedSpaceModeButton.classList.toggle("is-active", !showJourney);
+    myJourneyModeButton.setAttribute("aria-pressed", String(showJourney));
+    sharedSpaceModeButton.setAttribute("aria-pressed", String(!showJourney));
+
+    if (showJourney && state.personalJourney) {
+      setActiveLayer("personal");
+    } else if (!showJourney) {
+      setActiveLayer("onsite");
+    }
+  }
+
+  function replayPersonalJourney() {
+    if (!state.personalJourney) {
+      return;
+    }
+    setExperienceMode("journey");
+    setActiveLayer("personal");
+    state.personalTime = 0;
+    setPersonalPlaying(true);
+    animationStage.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function enterPostVisitSite() {
+    visitComplete.hidden = true;
     app.hidden = false;
+    updateVisitorFacingContent();
+    setExperienceMode("journey");
     window.scrollTo({ top: 0, behavior: "auto" });
     activatePersonalResult();
+  }
+
+  function bindPostVisitExperience() {
+    viewMyJourneyButton.addEventListener("click", enterPostVisitSite);
+    myJourneyModeButton.addEventListener("click", () => setExperienceMode("journey"));
+    sharedSpaceModeButton.addEventListener("click", () => setExperienceMode("shared"));
+    seeSharedSpaceButton.addEventListener("click", () => setExperienceMode("shared"));
+    journeyReplayButton.addEventListener("click", replayPersonalJourney);
+    sharedReplayButton.addEventListener("click", () => {
+      setExperienceMode("shared");
+      setActiveLayer("onsite");
+      state.currentTime = 0;
+      setPlaying(true);
+      animationStage.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    viewMemoryButton.addEventListener("click", () => {
+      setExperienceMode("shared");
+      setActiveLayer("exhibition");
+      animationStage.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   }
 
   function finishExhibit() {
@@ -1325,7 +1452,7 @@
       state.personalTime >= visit.startTime && state.personalTime < visit.endTime
     ));
     if (activeVisit) {
-      return `${activeVisit.nodeId} / ${activeVisit.dwellSeconds.toFixed(1)}s dwell / ${activeVisit.rootCount} branch origins`;
+      return `${activeVisit.nodeId} · ${activeVisit.dwellSeconds.toFixed(1)} seconds viewing`;
     }
     const activeRoute = journey.routes.find((route) => (
       state.personalTime >= route.startTime && state.personalTime < route.endTime
@@ -1367,18 +1494,18 @@
     exhibitionReadout.textContent = `Accumulation ${Math.round(
       clamp(exhibitionTimelineValue / 10, 0, 100),
     )}%`;
-    playPauseButton.textContent = state.playing ? "Pause current" : "Play current";
+    playPauseButton.textContent = state.playing ? "Pause session" : "Play session";
     playPauseButton.setAttribute("aria-pressed", String(state.playing));
     exhibitionPlayPauseButton.textContent = state.exhibitionPlaying
-      ? "Pause accumulation"
-      : "Play accumulation";
+      ? "Pause memory"
+      : "Play memory";
     exhibitionPlayPauseButton.setAttribute(
       "aria-pressed",
       String(state.exhibitionPlaying),
     );
     personalPlayPauseButton.textContent = state.personalPlaying
-      ? "Pause journey"
-      : "Play journey";
+      ? "Pause my journey"
+      : "Play my journey";
     personalPlayPauseButton.setAttribute("aria-pressed", String(state.personalPlaying));
     const onsiteActive = state.activeLayer === "onsite";
     const exhibitionActive = state.activeLayer === "exhibition";
@@ -1400,14 +1527,14 @@
       >= getActiveTimelineDuration() - 0.0001;
     const pointerDirection = state.mobileRotated ? "vertically" : "horizontally";
     pointerHint.textContent = onsiteActive
-      ? `Red on-site routes · Move ${pointerDirection} to follow staggered visitor arrivals.`
-      : `Blue organ memory · Move ${pointerDirection}, or select a date below.`;
+      ? `Red session trace · Move ${pointerDirection} to follow visitors arriving at different times.`
+      : `Blue exhibition memory · Move ${pointerDirection}, or select a date below.`;
     replayActiveButton.textContent = onsiteActive
-      ? "↻ Replay current"
-      : "↻ Replay memory";
+      ? "↻ Replay Session"
+      : "↻ Replay Exhibition Memory";
     if (personalActive) {
-      pointerHint.textContent = `Purple personal trace / Move ${pointerDirection} to replay your viewing order and dwell.`;
-      replayActiveButton.textContent = "Replay journey";
+      pointerHint.textContent = `Purple personal trace · Move ${pointerDirection} to replay your viewing order and time.`;
+      replayActiveButton.textContent = "↻ Replay My Journey";
     }
     if (state.mobileRotated) {
       const layerName = onsiteActive
@@ -1852,6 +1979,7 @@
   }
 
   bindVisitorTest();
+  bindPostVisitExperience();
   bindControls();
   new ResizeObserver(resizeCanvas).observe(app);
   window.addEventListener("resize", resizeCanvas, { passive: true });

@@ -199,6 +199,7 @@ body {
   margin-bottom: 1rem;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.66);
+  transition: background-color 220ms ease;
 }
 
 .choice-image img {
@@ -206,11 +207,11 @@ body {
   height: 84%;
   object-fit: contain;
   filter: drop-shadow(0 13px 10px rgba(33, 27, 22, 0.15));
-  transition: transform 320ms ease;
 }
 
-.exhibit-choice:hover .choice-image img {
-  transform: scale(1.035);
+.exhibit-choice:hover .choice-image,
+.exhibit-choice:focus-visible .choice-image {
+  background: #1b1917;
 }
 
 .choice-name {
@@ -1557,8 +1558,8 @@ input:focus-visible {
 .journey-facts dd {
   margin: 0;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(1.15rem, 2vw, 2rem);
-  line-height: 1.35;
+  font-size: clamp(1rem, 1.25vw, 1.35rem);
+  line-height: 1.28;
 }
 
 .journey-route-fact dd {
@@ -1722,6 +1723,7 @@ input:focus-visible {
   margin-bottom: 1.5rem;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.35);
+  transition: background-color 220ms ease;
 }
 
 .editorial-organ-button {
@@ -1765,12 +1767,11 @@ input:focus-visible {
   height: 88%;
   object-fit: contain;
   filter: drop-shadow(0 16px 12px rgba(36, 29, 24, 0.13));
-  transition: transform 260ms ease;
 }
 
-.editorial-organ-button:hover .editorial-organ img,
-.editorial-organ-button:focus-visible .editorial-organ img {
-  transform: scale(1.035);
+.editorial-organ-button:hover .editorial-organ,
+.editorial-organ-button:focus-visible .editorial-organ {
+  background: #1b1917;
 }
 
 .exhibit-editorial > p {

@@ -330,18 +330,10 @@ body {
   font-weight: 400;
 }
 
-.detail-description,
-.detail-question {
+.detail-description {
   margin: 0;
   color: var(--muted);
   line-height: 1.7;
-}
-
-.detail-question {
-  margin-top: 1.2rem;
-  color: var(--ink);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.15rem;
 }
 
 .dwell-readout {
@@ -2323,20 +2315,10 @@ input:focus-visible {
   line-height: 0.95;
 }
 
-.exhibition-info-description,
-.exhibition-info-question {
+.exhibition-info-description {
   margin: 0;
   color: var(--muted);
   line-height: 1.75;
-}
-
-.exhibition-info-question {
-  margin-top: 1.6rem;
-  padding-top: 1.6rem;
-  color: var(--ink);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.2rem;
-  border-top: 1px solid var(--line);
 }
 
 .exhibition-info-copy .editorial-action {

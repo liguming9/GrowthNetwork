@@ -69,7 +69,6 @@
   const exhibitionInfoTitle = document.getElementById("exhibition-info-title");
   const exhibitionInfoImage = document.getElementById("exhibition-info-image");
   const exhibitionInfoDescription = document.getElementById("exhibition-info-description");
-  const exhibitionInfoQuestion = document.getElementById("exhibition-info-question");
   const closeExhibitionInfoButton = document.getElementById("close-exhibition-info");
   const closeExhibitionInfoIcon = document.getElementById("close-exhibition-info-icon");
 
@@ -84,38 +83,33 @@
   const detailTitle = document.getElementById("detail-title");
   const detailImage = document.getElementById("detail-image");
   const detailDescription = document.getElementById("detail-description");
-  const detailQuestion = document.getElementById("detail-question");
   const detailDwellTime = document.getElementById("detail-dwell-time");
   const finishExhibitButton = document.getElementById("finish-exhibit");
 
   const exhibitContent = {
     Brain: {
-      index: "Exhibit 01 / Connection",
+      index: "Exhibit 01 / Neural control",
       image: "./assets/brain.png",
       alt: "White sculptural model of a brain",
-      description: "The brain work considers memory as a living system: signals strengthen when they are revisited, while quieter connections remain as faint traces.",
-      question: "Which memories become pathways through repetition?",
+      description: "The brain is the body's control centre. It receives and processes sensory information, supports thought and memory, and coordinates movement, emotion and many automatic functions.",
     },
     Eye: {
-      index: "Exhibit 02 / Perception",
+      index: "Exhibit 02 / Vision",
       image: "./assets/eye.png",
       alt: "White sculptural model of an eye",
-      description: "The eye explores the act of looking as participation. Attention is treated as material that can gather, linger and redirect the wider exhibition network.",
-      question: "How does looking change the thing being observed?",
+      description: "The eye detects light and converts it into electrical signals. These signals travel through the optic nerve to the brain, where they are interpreted as vision.",
     },
     Heart: {
-      index: "Exhibit 03 / Rhythm",
+      index: "Exhibit 03 / Circulation",
       image: "./assets/heart.png",
       alt: "White sculptural model of a heart",
-      description: "The heart anchors the exhibition's vascular language. Repeated movement becomes circulation, joining individual encounters into a shared spatial rhythm.",
-      question: "Can collective movement behave like a living pulse?",
+      description: "The heart is a muscular pump that circulates blood throughout the body. It delivers oxygen and nutrients to tissues and carries carbon dioxide and other waste products away.",
     },
     Lung: {
-      index: "Exhibit 04 / Exchange",
+      index: "Exhibit 04 / Respiration",
       image: "./assets/lung.png",
       alt: "White sculptural model of lungs",
-      description: "The lung work focuses on exchange between body and environment. Its branching form mirrors how visitors disperse, pause and return through the space.",
-      question: "What does a space inhale and retain from its visitors?",
+      description: "The lungs exchange gases between the body and the air. They move oxygen into the bloodstream and remove carbon dioxide when we breathe out.",
     },
   };
 
@@ -263,7 +257,6 @@
     detailImage.src = content.image;
     detailImage.alt = content.alt;
     detailDescription.textContent = content.description;
-    detailQuestion.textContent = content.question;
     detailDwellTime.textContent = "0.0s";
     const isFinalUnseenExhibit = testState.session.order.length === 3
       && !testState.session.order.includes(nodeId);
@@ -434,7 +427,6 @@
         exhibitionInfoImage.src = content.image;
         exhibitionInfoImage.alt = content.alt;
         exhibitionInfoDescription.textContent = content.description;
-        exhibitionInfoQuestion.textContent = content.question;
         exhibitionInfoDialog.showModal();
       });
     }
